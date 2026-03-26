@@ -1,0 +1,75 @@
+#include <iostream>
+using namespace std;
+
+struct node {
+    int d;
+    node *next;
+};
+
+node* search(node *h, int v) {
+if(h==NULL){
+    return NULL;
+
+}else if(h->next==h){
+    if(h->d==v)
+return h;
+else return NULL;
+
+}else {
+  node*i=h;
+  if(h->d==v){
+    return h;
+  }else
+  i=i->next;
+  while(i!=h&&i->d!=v){
+i=i->next;
+  }
+  if(i!=h)
+  return i;
+  else return NULL;
+}
+
+}
+
+void deleteCircular(node *&h,int v){
+node *i=h;
+node *deleteNum = search(h, v);
+
+if(h==NULL){
+    cout<<"is empty";
+}else if (deleteNum == NULL) {
+cout << "Value not found\n";
+
+}else if(h->next==h&&deleteNum->d==v){
+
+delete(deleteNum);//h
+h=NULL;
+
+}else if(h->next!=h){
+
+if(deleteNum==h){
+    while(i->next!=h)
+        i=i->next;
+
+    i->next=h->next;
+
+    delete(deleteNum);//h
+    h=i->next;
+
+
+}else{
+while(i->next !=deleteNum)
+    i=i->next;
+
+i->next=deleteNum->next;
+delete(deleteNum);
+}
+}
+}
+
+
+int main()
+{
+
+    return 0;
+}
