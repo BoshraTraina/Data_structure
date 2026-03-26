@@ -1,0 +1,70 @@
+#include <iostream>
+using namespace std;
+const int size=5;
+  void bubble(int a[]){
+  for(int i=0;i<size-1;i++){
+    for(int j=0;j<size-i-1;j++){
+        if(a[j]>a[j+1]){
+            swap(a[j],a[j+1]);
+        }
+    }
+  }
+  }
+  void select(int a[]){
+      int min;
+  for(int i=0;i<size-1;i++){
+        min=i;
+    for(int j=i+1;j<size;j++){
+       if(a[min]>a[j])
+        min=j;
+    }
+    swap(a[min],a[i]);
+  }
+
+}
+void insertion(int a[]){
+    for(int i=1;i<size;i++){
+        int temp=a[i];
+        int j=i;
+        while(j>0&&temp<a[j-1]){
+            a[j]=a[j-1];
+            j--;
+            }
+    a[j]=temp;
+    }
+
+}
+
+ void print(int a[]){
+   for(int i=0;i<size;i++){
+     cout<<a[i]<<" ";
+    }
+ }
+int main()
+{
+    int a[size];
+    char ch;
+    cout<<"enter the element";
+    for(int i=0;i<size;i++){
+        cin>>a[i];
+    }
+    cout<<"what the algorithm do you want to use enter b or i or s \n";
+    cin>>ch;
+    switch(ch){
+    case 'b':
+        bubble(a);
+        break;
+    case 's':
+        select(a);
+        break;
+    case 'i':
+        insertion(a);
+        break;
+    default:
+        cout<<"invalid input";
+    }
+    cout<<"the sorted array is \n";
+    print(a);
+
+    return 0;
+}
