@@ -1,0 +1,150 @@
+#include <iostream>
+using namespace std;
+
+struct node {
+    int d;
+    node* next;
+};
+
+node* addAtBeginning(node* head, int value) {
+    node* newNode = new node;
+    newNode->d = value;
+    newNode->next = head;
+    return newNode;
+}
+
+node* insertAfter(node* h, int key, int nv) {
+    for (node* i = h; i != NULL; i = i->next) {
+        if(i->d == key) {
+            node* N = new node;
+            N->d = nv;
+            N->next = i->next;
+            i->next = N;
+        }
+    }
+    return h;
+}
+
+node* deleteIteration(node* h, int v) {
+    if (h == NULL) return NULL;
+
+    node* i = h;
+    node* prev = NULL;
+    int c = 0;
+
+    while (i != NULL) {
+        if (i->d == v) {
+            c++;
+            if (c > 1) {
+                node* temp = i;
+                i = i->next;
+                prev->next = i;
+                delete temp;
+                continue;
+            }
+        }
+        prev = i;
+        i = i->next;
+    }
+
+    return h;
+}
+
+node* deleteKeepLast(node* h, int v) {
+    if (h == NULL) return h;
+
+    int count = 0;
+    node* t = h;
+    while (t != NULL) {
+        if (t->d == v) count++;
+        t = t->next;
+    }
+
+    node* i = h;
+    node* prev = NULL;
+
+    while (i != NULL && count != 1) {
+        if (i->d == v) {
+            count--;
+            if (i == h) {
+                node* temp = h;
+                h = h->next;
+                i = h;
+                prev = NULL;
+                delete temp;
+            } else {
+                prev->next = i->next;
+                node* temp = i;
+                i = prev->next;
+                delete temp;
+            }
+        } else {
+            prev = i;
+            i = i->next;
+        }
+    }
+
+    return h;
+}
+
+void display(node* head) {
+    node* temp = head;
+    cout << "List: ";
+    while (temp != NULL) {
+        cout << temp->d << " ";
+        temp = temp->next;
+    }
+    cout << endl;
+}
+
+int main() {
+    node* head = NULL;
+    int choice, val, key;
+
+    do {
+        cout << "\n========= MENU =========\n";
+        cout << "1. Add node at beginning\n";
+        cout << "2. Add node after specific value\n";
+        cout << "3. Delete repeated values\n";
+        cout << "4. Display list\n";
+        cout << "5. Delete repeated values but remain last itration\n";
+        cout << "0. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+        case 1:
+            cin >> val;
+            head = addAtBeginning(head, val);
+            break;
+
+        case 2:
+            cin >> key >> val;
+            head = insertAfter(head, key, val);
+            break;
+
+        case 3:
+            cin >> val;
+            head = deleteIteration(head, val);
+            break;
+
+        case 4:
+            display(head);
+            break;
+
+        case 5:
+            cin >> val;
+            head = deleteKeepLast(head, val);
+            break;
+
+        case 0:
+            break;
+
+        default:
+            cout << "Invalid choice!" << endl;
+        }
+
+    } while (choice != 0);
+
+    return 0;
+}
