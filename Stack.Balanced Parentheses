@@ -1,0 +1,77 @@
+#include <iostream>
+#include <string>
+using namespace std;
+const int size=50;
+struct stack{
+char arr[size];
+int top=-1;
+
+void push(char val) {
+if (!full())
+arr[++top] = val;
+}
+
+void pop() {
+    if(!isempty())
+    top--;
+}
+
+char ret() {
+    return arr[top];
+}
+
+bool full() {
+    return top == size - 1;
+}
+bool isempty(){
+    return top==-1;
+}
+void print(){
+while(!isempty()){
+    cout<<ret()<<" ";
+    pop();
+}
+}
+
+};
+bool ArePair(char open, char close)
+{
+	if (open == '(' && close == ')')
+		return true;
+	else if (open == '{' && close == '}')
+		return true;
+	else if (open == '[' && close == ']')
+		return true;
+	return false;
+}
+bool areBalanced(string exp)  {
+  stack s;
+    for(int i=0;exp[i]!='\0';i++){
+            if(exp[i]=='['||exp[i]=='{'||exp[i]=='('){
+                s.push(exp[i]);
+               }else if(exp[i]==']'||exp[i]=='}'||exp[i]==')'){
+                   if(s.isempty()||!ArePair(s.ret(),exp[i])){
+                        return false;
+                   }else{
+                   s.pop();
+                   }
+               }
+    }
+if(s.isempty())
+    return true;
+return false;
+}
+
+int main()
+{
+string exp;
+cout<<"enter the exprtion "<<endl;
+cin>>exp;
+if(areBalanced(exp)){
+    cout<<"are balanced ";
+}else{
+cout<<"not balanced";
+}
+
+    return 0;
+}
