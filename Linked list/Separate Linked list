@@ -1,0 +1,91 @@
+#include <iostream>
+using namespace std;
+struct node {
+    int data;
+    node* next;
+};
+void split(node *h){
+int c = 1, r = 1, R;
+    node* i = h;
+    node* j=h;
+    node* h2;
+
+    while (i->next != h) {
+        c++;
+        i = i->next;
+    }
+
+    R = c / 2; //نحسب النصف
+
+    while (r < R) { //الوصول لنهاية النصف الاول
+    j = j->next;
+    r++;
+   }
+
+    h2 = j->next;
+    j->next = h;
+
+    node* k = h2;
+    while (k->next != h) {
+        k = k->next;
+    }
+    k->next = h2;
+
+
+
+    // طباعة
+    cout << "\nFirst circular list: ";
+    node* temp = h;
+    do {
+        cout << temp->data << " ";
+        temp = temp->next;
+    } while (temp != h);
+
+    cout << "\nSecond circular list: ";
+    temp = h2;
+    do {
+        cout << temp->data << " ";
+        temp = temp->next;
+    } while (temp != h2);
+    cout << endl;
+
+}
+int main()
+{
+
+    node *h = NULL;
+    node *temp = NULL;
+    int val;
+
+    cout << "Enter values for the circular linked list (-1 to stop):\n";
+    while (true) {
+        cin >> val;
+        if (val == -1) break;
+
+        node* newNode = new node;
+        newNode->data = val;
+        newNode->next = NULL;
+
+        if (h == NULL) {
+            h = newNode;
+            temp = h;
+        } else {
+            temp->next = newNode;
+            temp = temp->next;
+        }
+    }
+
+    if (h == NULL) {
+        cout << "List is empty.\n";
+        return 0;
+    }
+
+    temp->next = h; // نجعلها دائرية
+
+    split(h);
+
+
+
+
+    return 0;
+}
