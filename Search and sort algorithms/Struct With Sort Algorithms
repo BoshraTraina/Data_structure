@@ -1,0 +1,80 @@
+#include <iostream>
+using namespace std;
+const int num=5;
+ struct student{
+ string name;
+ int mark;
+ };
+  void bubble(student s[],int num){
+  for(int i=0;i<num-1;i++){
+    for(int j=0;j<num-i-1;j++){
+        if(s[j].mark<s[j+1].mark){
+            swap(s[j],s[j+1]);
+        }
+    }
+  }
+  }
+  void select(student s[],int num){
+      int max;
+  for(int i=0;i<num-1;i++){
+        max=i;
+    for(int j=i+1;j<num;j++){
+       if(s[max].mark<s[j].mark)
+        max=j;
+    }
+    swap(s[max],s[i]);
+  }
+
+}
+void insertion(student s[],int num){
+    for(int i=1;i<num;i++){
+        student temp=s[i];
+        int j=i;
+        while(j>0&&temp.mark>s[j-1].mark){
+            s[j]=s[j-1];
+            j--;
+            }
+    s[j]=temp;
+    }
+
+}
+
+ void print(student s[]){
+   for(int i=0;i<num;i++){
+        cout<<s[i].name<<" "<<s[i].mark<<endl;
+    }
+ }
+int main()
+{
+    int num;
+    char ch;
+    cout<<"enter the num of student";
+    cin>>num;
+    student s[num];
+    for(int i=0;i<num;i++){
+        cout<<"enter the name of student "<<i<<endl;
+        cin>>s[i].name;
+        cout<<"enter the mark student "<<i<<endl;
+        cin>>s[i].mark;
+    }
+
+    cout<<"what the algorithm do you want to use enter b or i or s \n";
+    cin>>ch;
+    switch(ch){
+    case 'b':
+        bubble(s,num);
+        break;
+    case 's':
+        select(s,num);
+        break;
+    case 'i':
+        insertion(s,num);
+        break;
+    default:
+        cout<<"invalid input";
+    }
+    cout<<"the student is sorted \n";
+    print(s);
+
+    return 0;
+}
