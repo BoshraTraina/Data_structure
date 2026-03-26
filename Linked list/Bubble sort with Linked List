@@ -1,0 +1,70 @@
+#include <iostream>
+using namespace std;
+
+struct node {
+    int data;
+    node *next;
+};
+
+
+
+   void addEnd(node*& h, int v) {
+    node* N = new node;
+    N->data = v;
+    N->next = NULL;
+
+    if (h == NULL) {
+        h = N;
+    } else {
+        node* i;
+        for (i = h; i->next != NULL; i = i->next);
+        i->next = N;
+    }
+}
+
+
+
+void printList(node *h) {
+    for (node *i = h; i != NULL; i = i->next)
+        cout << i->data << " ";
+    cout << endl;
+}
+
+void bubbleSort(node *head) {
+    node *end = NULL;
+    if(head!=NULL&&head->next!=NULL){
+    for (node *i = head; i!= NULL; i = i->next) {
+        node *j = head;
+        while (j->next != end) {
+            if (j->data > j->next->data) {
+                int temp = j->data;
+                j->data = j->next->data;
+                j->next->data = temp;
+            }
+            j = j->next;
+        }
+        end = j;
+    }
+    }else
+    return;
+}
+
+int main() {
+    node *head = NULL;
+
+    addEnd(head, 5);
+    addEnd(head, 3);
+    addEnd(head, 8);
+    addEnd(head, 1);
+    addEnd(head, 4);
+
+    cout << "linked list before sorted\n";
+    printList(head);
+
+    bubbleSort(head);
+
+    cout << "linked list after sorted\n";
+    printList(head);
+
+    return 0;
+}
