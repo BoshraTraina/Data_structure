@@ -1,0 +1,75 @@
+#include <iostream>
+using namespace std;
+const int size= 5;
+int Full(int f, int l)
+{
+    if (f == 0 && l == size - 1)
+        return 1;
+    else
+        return 0;
+}
+int empty(int f,int l)
+{
+    if (f == -1 && l == -1)
+        return 1;
+    else
+        return 0;
+}
+
+void enqueue( int q[], int& f, int& l, int el)
+{
+    if (!Full(f, l))
+    {
+        if (l == size - 1)
+        {
+            for (int i = f; i <=l; i++)
+                q[i - 1] = q[i];
+            q[l] = el;
+            f = f - 1;
+        }
+        else
+        {
+            q[++l] = el;
+            if (f == -1)
+                f = 0;
+        }
+    }
+    else
+        cout<<"Full queue"<<endl;
+}
+
+void dequeue(int& f, int& l)
+{
+    if(f==l)
+        f=l=-1;
+    else
+        f=f+1;
+}
+
+void print(int q[],int f, int l)
+{
+    if (empty(f, l))
+        cout << "Queue is empty" << endl;
+    else
+    {
+        cout << "Queue element: ";
+        for (int i = f; i <= l; i++)
+            cout << q[i] << " ";
+        cout << endl;
+    }
+}
+
+int main()
+{
+    int q[size], f = -1, l = -1;
+    enqueue(q, f, l, 1);
+    enqueue(q, f, l, 2);
+    enqueue(q, f, l, 3);
+    enqueue(q, f, l, 4);
+    enqueue(q, f, l, 5);
+    enqueue(q, f, l, 6);
+    print(q, f, l);
+    dequeue(f, l);
+    enqueue(q, f, l, 6);
+    print(q, f, l);
+}
