@@ -1,0 +1,61 @@
+#include <iostream>
+using namespace std;
+
+struct node {
+    int num;
+    node *next;
+};
+
+
+void addEnd(node *h, int v) {
+    node *i;
+    for (i = h; i->next != NULL; i = i->next);
+    node *N = new node;
+    N->num = v;
+    N->next = NULL;
+    i->next = N;
+}
+
+
+void insertAfter(node *h, int key, int nv) {
+    for (node *i = h; i != NULL; i = i->next) {
+        if (i->num == key) {
+            node *N = new node;
+            N->num = nv;
+            N->next = i->next;
+            i->next = N;
+            break;
+        }
+    }
+}
+
+
+void print(node *h) {
+    for (node *i = h; i != NULL; i = i->next) {
+        cout << i->num << " ";
+    }
+    cout << endl;
+}
+
+int main() {
+
+    node *head = new node;
+    head->num = 10;
+    head->next = NULL;
+
+
+    addEnd(head, 4);
+    addEnd(head, 5);
+    addEnd(head, 6);
+    addEnd(head, 8);
+
+    cout << "before insert:\n";
+    print(head);
+
+    insertAfter(head, 5, 99);
+
+    cout << "after insert:\n";
+    print(head);
+
+    return 0;
+}
