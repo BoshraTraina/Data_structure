@@ -1,6 +1,8 @@
 #include <iostream>
 using namespace std;
-const int size= 5;
+
+const int size = 5;
+
 int Full(int f, int l)
 {
     if (f == 0 && l == size - 1)
@@ -8,7 +10,8 @@ int Full(int f, int l)
     else
         return 0;
 }
-int empty(int f,int l)
+
+int empty(int f, int l)
 {
     if (f == -1 && l == -1)
         return 1;
@@ -16,13 +19,13 @@ int empty(int f,int l)
         return 0;
 }
 
-void enqueue( int q[], int& f, int& l, int el)
+void enqueue(int q[], int& f, int& l, int el)
 {
     if (!Full(f, l))
     {
         if (l == size - 1)
         {
-            for (int i = f; i <=l; i++)
+            for (int i = f; i <= l; i++)
                 q[i - 1] = q[i];
             q[l] = el;
             f = f - 1;
@@ -35,18 +38,29 @@ void enqueue( int q[], int& f, int& l, int el)
         }
     }
     else
-        cout<<"Full queue"<<endl;
+        cout << "Full queue" << endl;
 }
 
 void dequeue(int& f, int& l)
 {
-    if(f==l)
-        f=l=-1;
+    if (f == l)
+        f = l = -1;
     else
-        f=f+1;
+        f = f + 1;
 }
 
-void print(int q[],int f, int l)
+int retrieve(int q[], int f, int l)
+{
+    if (!empty(f, l))
+        return q[f];
+    else
+    {
+        cout << "Queue is empty" << endl;
+        return -1;
+    }
+}
+
+void print(int q[], int f, int l)
 {
     if (empty(f, l))
         cout << "Queue is empty" << endl;
@@ -62,14 +76,20 @@ void print(int q[],int f, int l)
 int main()
 {
     int q[size], f = -1, l = -1;
+
     enqueue(q, f, l, 1);
     enqueue(q, f, l, 2);
     enqueue(q, f, l, 3);
     enqueue(q, f, l, 4);
     enqueue(q, f, l, 5);
-    enqueue(q, f, l, 6);
+
     print(q, f, l);
+
+    cout << retrieve(q, f, l) << endl;
+
     dequeue(f, l);
-    enqueue(q, f, l, 6);
-    print(q, f, l);
+
+    cout << retrieve(q, f, l) << endl;
+
+    return 0;
 }
