@@ -1,0 +1,64 @@
+#include <iostream>
+using namespace std;
+const int size=100;
+class stack{
+private:
+    int top;
+    int item[size];
+    public:
+        stack():top(-1){}
+
+        void push(int element){
+            if(top==size-1){
+                cout<<"the stack is full";
+            }
+            else{
+            top++;
+            item[top]=element;}
+        }
+        bool isEmpity(){
+            return top<0;
+        }
+        void pop(){
+            if(isEmpity())
+                cout<<"the stack is empity";
+        else
+            top--;
+        }
+        void popAndElement(int &ele){
+                 if(isEmpity())
+                cout<<"the stack is empity";
+        else
+            ele=item[top];
+            top--;
+        }
+        void print(){
+            cout<<"[";
+        for(int i=top;i>=0;i--){
+            cout<<item[i]<<" ";
+        }
+        cout<<"]";
+        }
+
+
+};
+
+int main()
+{
+stack s;int y=0;
+s.push(10);
+s.push(5);
+s.push(15);
+s.push(25);
+s.push(87);
+s.push(199);
+s.print();
+cout<<endl;
+//s.pop();
+s.popAndElement(y);
+cout<<y<<endl;
+s.print();
+
+
+    return 0;
+}
