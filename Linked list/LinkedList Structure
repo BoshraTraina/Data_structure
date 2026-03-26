@@ -1,0 +1,108 @@
+#include <iostream>
+using namespace std;
+
+struct node {
+    int d;
+    node *next;
+};
+
+
+node* search(node *h, int key) {
+    for (node *i = h; i != NULL; i = i->next) {
+        if (i->d == key)
+            return i;
+    }
+    return NULL;
+}
+
+
+void insert_begin(node *&h, int v) {
+    if (search(h, v) == NULL) {
+        node *n = new node;
+        n->d = v;
+        n->next = h;
+        h = n;
+        cout << v << " inserted at beginning.\n";
+    } else {
+        cout << v << " is found, not inserted.\n";
+    }
+}
+
+
+int delete_node(node *&h, int v) {
+    node *cn, *prev;
+    cn = h;
+    prev = h;
+
+    if (h == NULL)
+        return 0;
+
+    if (h->d == v) {
+        h = h->next;
+        delete cn;
+        return 1;
+    }
+
+
+    cn = h->next;
+    while (cn != NULL) {
+        if (cn->d == v) {
+            prev->next = cn->next;
+            delete cn;
+            return 1;
+        }
+        prev = cn;
+        cn = cn->next;
+    }
+    return 0;
+}
+
+node *max(node *h){
+node *i,*m=h;
+for(i=h;i!=NULL;i=i->next){
+    if(i->d > m->d)
+        m=i;
+}
+return m;
+}
+
+void selectsort(node *h){
+for(node *i=h;i!=NULL;i=i->next){
+    swap(max(i)->d,i->d);
+}
+}
+
+void print(node *h) {
+    node *i;
+    for (i = h; i != NULL; i = i->next) {
+        cout << i->d << " ";
+    }
+    cout << endl;
+}
+
+
+int main() {
+    node *head = NULL;
+
+    insert_begin(head, 10);
+    insert_begin(head, 20);
+    insert_begin(head, 30);
+
+    cout << "List: ";
+    print(head);
+
+    delete_node(head, 20);
+    cout << "After deleting 20: ";
+    print(head);
+
+    if (search(head, 10))
+        cout << "10 is found\n";
+    else
+        cout << "10 is not found\n";
+
+    delete_node(head, 30);
+    cout << "After deleting 30: ";
+    print(head);
+
+    return 0;
+}
