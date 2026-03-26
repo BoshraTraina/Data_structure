@@ -1,0 +1,41 @@
+#include <iostream>
+using namespace std;
+
+struct node {
+    int num;
+    node *next;
+};
+
+void addEnd(node *&h, int v) {
+    node *N = new node;
+    N->num = v;
+    N->next = NULL;
+
+    if (h == NULL) {
+        h = N;
+    } else {
+        node *i;
+        for (i = h; i->next != NULL; i = i->next);
+        i->next = N;
+    }
+}
+
+void printList(node *h) {
+    for (node *i = h; i != NULL; i = i->next)
+        cout << i->num << " ";
+    cout << endl;
+}
+
+int main() {
+    node *head = NULL;
+
+    addEnd(head, 10);
+    addEnd(head, 20);
+    addEnd(head, 30);
+    addEnd(head, 40);
+
+    cout << "Linked List: ";
+    printList(head);
+
+    return 0;
+}
