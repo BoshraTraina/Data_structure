@@ -1,0 +1,159 @@
+#include <iostream>
+using namespace std;
+
+struct node {
+    int data;
+    node* next;
+    node* prev;
+};
+
+node* addFirst(node* head, int x) {
+    node* cn = new node;
+    cn->data = x;
+    cn->next = head;
+    cn->prev = NULL;
+    if (head != NULL)
+        head->prev = cn;
+    head = cn;
+    return head;
+}
+
+node* addLast(node* head, int x) {
+    node* cn = new node;
+    cn->data = x;
+    cn->prev = NULL;
+    cn->next = NULL;
+    if (head == NULL)
+        return cn;
+    node* i = head;
+    while (i->next != NULL)
+        i = i->next;
+    i->next = cn;
+    cn->prev = i;
+    return head;
+}
+
+node* addAfter(node* head, int value, int x) {
+    if (head == NULL)
+        return head;
+    node* i = head;
+    while (i != NULL) {
+        if (i->data == value) {
+            node* cn = new node;
+            cn->data = x;
+            if (i->next == NULL) {
+                cn->next = NULL;
+                cn->prev = i;
+                i->next = cn;
+                return head;
+            }
+            cn->next = i->next;
+            cn->prev = i;
+            i->next->prev = cn;
+            i->next = cn;
+            return head;
+        }
+        i = i->next;
+    }
+    return head;
+}
+
+node* deleteLast(node* head) {
+    if (head == NULL)
+        return head;
+    if (head->next == NULL) {
+        delete head;
+        return NULL;
+    }
+    node* i = head;
+    while (i->next != NULL)
+        i = i->next;
+    i->prev->next = NULL;
+    delete i;
+    return head;
+}
+
+void printForward(node* head) {
+    node* i = head;
+    while (i != NULL) {
+        cout << i->data << " ";
+        i = i->next;
+    }
+    cout << endl;
+}
+
+void printBackward(node* head) {
+    if (head == NULL) return;
+    node* i = head;
+    while (i->next != NULL)
+        i = i->next;
+    while (i != NULL) {
+        cout << i->data << " ";
+        i = i->prev;
+    }
+    cout << endl;
+}
+
+node* reverseDLL(node* head) {
+    node* i = head;
+    node* temp = NULL;
+    while (i != NULL) {
+        temp = i->prev;
+        i->prev = i->next;
+        i->next = temp;
+        i = i->prev;
+    }
+    if (temp != NULL)
+        head = temp->prev;
+    return head;
+}
+
+int main() {
+    node* head = NULL;
+    int choice, x, value;
+    while (true) {
+        cout << "\n1- Add First";
+        cout << "\n2- Add Last";
+        cout << "\n3- Add After Value";
+        cout << "\n4- Delete Last";
+        cout << "\n5- Print Forward";
+        cout << "\n6- Print Backward";
+        cout << "\n7- Reverse List";
+        cout << "\n8- Exit";
+        cout << "\nEnter your choice: ";
+        cin >> choice;
+        switch (choice) {
+        case 1:
+            cout << "Enter value: ";
+            cin >> x;
+            head = addFirst(head, x);
+            break;
+        case 2:
+            cout << "Enter value: ";
+            cin >> x;
+            head = addLast(head, x);
+            break;
+        case 3:
+            cout << "Enter value to insert after: ";
+            cin >> value;
+            cout << "Enter new value: ";
+            cin >> x;
+            head = addAfter(head, value, x);
+            break;
+        case 4:
+            head = deleteLast(head);
+            break;
+        case 5:
+            printForward(head);
+            break;
+        case 6:
+            printBackward(head);
+            break;
+        case 7:
+            head = reverseDLL(head);
+            break;
+        case 8:
+            return 0;
+        }
+    }
+}
