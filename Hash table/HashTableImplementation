@@ -1,0 +1,235 @@
+#include <iostream>
+#include <string>
+using namespace std;
+const int size = 10;
+
+int hashDivision(int key)
+{
+    return key % size;
+}
+
+int hashFolding(int key)
+{
+    int sum = 0;
+    while (key > 0)
+    {
+        sum += key % 100;
+        key /= 100;
+    }
+    return sum % size;
+}
+
+int hashMultiplication(int key)
+{
+    double A = 0.6180339887;
+    double x = key * A;
+    double frac = x - (int)x;
+    return (int)(size * frac);
+}
+
+int hashMidSquare(int key)
+{
+    long long sq = (long long)key * key;
+    string s = to_string(sq);
+    if (s.length() < 2)
+        return sq % size;
+    int mid = s.length() / 2;
+    int val = (s[mid - 1] - '0') * 10 + (s[mid] - '0');
+    return val % size;
+}
+
+int getIndex(int key, int hf)
+{
+    if (hf == 1) return hashDivision(key);
+    if (hf == 2) return hashFolding(key);
+    if (hf == 3) return hashMultiplication(key);
+    return hashMidSquare(key);
+}
+
+
+void initialize(int a[])
+{
+    for (int i = 0; i < size; i++)
+        a[i] = -1;
+}
+
+void addLinear(int a[], int key, int hf)
+{
+    for (int i = 0; i < size; i++)
+    {
+        int index = (getIndex(key, hf) + i) % size;
+        if (a[index] == -1 || a[index] == -2)
+        {
+            a[index] = key;
+            return;
+        }
+    }
+}
+
+void deleteLinear(int a[], int key, int hf)
+{
+    for (int i = 0; i < size; i++)
+    {
+        int index = (getIndex(key, hf) + i) % size;
+        if (a[index] == key)
+        {
+            a[index] = -2;
+            return;
+        }
+        if (a[index] == -1) break;
+    }
+}
+
+void editLinear(int a[], int oldValue, int newValue, int hf)
+{
+    for (int i = 0; i < size; i++)
+    {
+        int index = (getIndex(oldValue, hf) + i) % size;
+        if (a[index] == oldValue)
+        {
+            a[index] = -2;
+            addLinear(a, newValue, hf);
+            return;
+        }
+        if (a[index] == -1) break;
+    }
+}
+
+void printLinear(int a[])
+{
+    for (int i = 0; i < size; i++)
+        cout << a[i] << "\t";
+    cout << endl;
+}
+
+
+
+struct Node
+{
+    int data;
+    Node* next;
+};
+
+void addChain(Node*& head, int val)
+{
+    Node* n = new Node;
+    n->data = val;
+    n->next = head;
+    head = n;
+}
+
+void deleteChain(Node*& head, int val)
+{
+    Node *cur = head, *prev = NULL;
+    while (cur)
+    {
+        if (cur->data == val)
+        {
+            if (prev) prev->next = cur->next;
+            else head = cur->next;
+            delete cur;
+            return;
+        }
+        prev = cur;
+        cur = cur->next;
+    }
+}
+
+void editChain(Node* a[], int oldValue, int newValue, int hf)
+{
+    deleteChain(a[getIndex(oldValue, hf)], oldValue);
+    addChain(a[getIndex(newValue, hf)], newValue);
+}
+
+void printChain(Node* a[])
+{
+    for (int i = 0; i < size; i++)
+    {
+        cout << i << " -> ";
+        Node* t = a[i];
+        while (t)
+        {
+            cout << t->data << " ";
+            t = t->next;
+        }
+        cout << endl;
+    }
+}
+
+
+int main()
+{
+    int hf, cm;
+    cout << "Choose Hash Function:\n";
+    cout << "1- Division\n2- Folding\n3- Multiplication\n4- MidSquare\n";
+    cin >> hf;
+
+    cout << "\nChoose Collision Method:\n";
+    cout << "1- Linear Probing\n2- Chaining\n";
+    cin >> cm;
+
+    char op;
+    int key, newv;
+
+    if (cm == 1)
+    {
+        int a[size];
+        initialize(a);
+
+        do
+        {
+            cout << "\na-Add d-Delete e-Edit p-Print O-Exit\n";
+            cin >> op;
+
+            if (op == 'a')
+            {
+                cin >> key;
+                addLinear(a, key, hf);
+            }
+            else if (op == 'd')
+            {
+                cin >> key;
+                deleteLinear(a, key, hf);
+            }
+            else if (op == 'e')
+            {
+                cin >> key >> newv;
+                editLinear(a, key, newv, hf);
+            }
+            else if (op == 'p')
+                printLinear(a);
+
+        } while (op != 'O');
+    }
+    else
+    {
+        Node* a[size] = { NULL };
+
+        do
+        {
+            cout << "\na-Add d-Delete e-Edit p-Print O-Exit\n";
+            cin >> op;
+
+            if (op == 'a')
+            {
+                cin >> key;
+                addChain(a[getIndex(key, hf)], key);
+            }
+            else if (op == 'd')
+            {
+                cin >> key;
+                deleteChain(a[getIndex(key, hf)], key);
+            }
+            else if (op == 'e')
+            {
+                cin >> key >> newv;
+                editChain(a, key, newv, hf);
+            }
+            else if (op == 'p')
+                printChain(a);
+
+        } while (op != 'O');
+    }
+
+    return 0;
+}
