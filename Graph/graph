@@ -1,0 +1,370 @@
+#include <iostream>
+using namespace std;
+
+const int size = 20;
+#define INF 1000
+
+
+int search(string v[], int n, string key)
+{
+    for (int i = 0; i < n; i++)
+        if (v[i] == key)
+            return i;
+    return -1;
+}
+
+
+void addVertex(string v[], int &n, string name, int E[][size])
+{
+    if (n >= size)
+    {
+        cout << "\nCannot add more vertices.\n";
+        return;
+    }
+
+    if (search(v, n, name) != -1)
+    {
+        cout << "\nVertex already exists.\n";
+        return;
+    }
+
+    v[n++] = name;
+    cout << "\nVertex added.\n";
+}
+
+
+void addEdge(string v[], int n, int E[][size], string s, string d)
+{
+    int sp = search(v, n, s);
+    int dp = search(v, n, d);
+
+    if (sp != -1 && dp != -1)
+    {
+        E[sp][dp] = 1;
+        E[dp][sp] = 1;
+        cout << "\nEdge added.\n";
+    }
+    else
+        cout << "\nVertex not found.\n";
+}
+
+
+void printMatrix(string v[], int n, int E[][size])
+{
+    cout << "\nAdjacency Matrix:\n   ";
+    for (int i = 0; i < n; i++)
+        cout << v[i] << " ";
+    cout << endl;
+
+    for (int i = 0; i < n; i++)
+    {
+        cout << v[i] << " ";
+        for (int j = 0; j < n; j++)
+            cout << E[i][j] << " ";
+        cout << endl;
+    }
+}
+
+/* DFS (Stack) */
+void push(string s[], int &top, string value)
+{
+    if (top < size - 1)
+        s[++top] = value;
+}
+
+void pop(int &top)
+{
+    if (top != -1)
+        top--;
+}
+
+string stackTop(string s[], int top)
+{
+    if (top == -1)
+        return "";
+    return s[top];
+}
+
+void DFS(string v[], int n, int E[][size], string start)
+{
+    int visited[size] = {0};
+    string s[size];
+    int top = -1;
+
+    int st = search(v, n, start);
+    if (st == -1)
+    {
+        cout << "\nStart vertex not found.\n";
+        return;
+    }
+
+    push(s, top, start);
+
+    cout << "\nDFS Traversal: ";
+
+    while (top != -1)
+    {
+        string current = stackTop(s, top);
+        int cv = search(v, n, current);
+
+        pop(top);
+
+        if (!visited[cv])
+        {
+            cout << v[cv] << " ";
+            visited[cv] = 1;
+
+            for (int i = n - 1; i >= 0; i--)
+                if (E[cv][i] == 1 && !visited[i])
+                    push(s, top, v[i]);
+        }
+    }
+    cout << endl;
+}
+
+/* BFS */
+bool empty(int f, int l) { return (f == -1); }
+
+void enq(string q[], int &f, int &l, string x)
+{
+    if (l < size - 1)
+    {
+        if (f == -1) f = 0;
+        q[++l] = x;
+    }
+}
+
+string queueFront(string q[], int f)
+{
+    return q[f];
+}
+
+void deq(int &f, int &l)
+{
+    if (f == l)
+        f = l = -1;
+    else
+        f++;
+}
+
+void BFS(string v[], int n, int E[][size], string sc)
+{
+    int visit[size] = {0};
+    string q[size];
+    int f = -1, l = -1;
+
+    int st = search(v, n, sc);
+    if (st == -1)
+    {
+        cout << "\nStart vertex not found.\n";
+        return;
+    }
+
+    enq(q, f, l, sc);
+
+    cout << "\nBFS Traversal: ";
+
+    while (!empty(f, l))
+    {
+        int cv = search(v, n, queueFront(q, f));
+
+        if (!visit[cv])
+        {
+            cout << v[cv] << " ";
+            visit[cv] = 1;
+        }
+
+        deq(f, l);
+
+        for (int i = 0; i < n; i++)
+            if (E[cv][i] == 1 && !visit[i])
+                enq(q, f, l, v[i]);
+    }
+    cout << endl;
+}
+
+/* Connected Components */
+void dfs_CN(string v[], int n, int E[][size], string s, string take[], int &TL)
+{
+    take[TL++] = s;
+    int cv = search(v, n, s);
+
+    for (int i = 0; i < n; i++)
+        if (E[cv][i] == 1 && search(take, TL, v[i]) == -1)
+            dfs_CN(v, n, E, v[i], take, TL);
+}
+
+int CN_components(string v[], int n, int E[][size])
+{
+    string take[size];
+    int TL = 0, c = 0;
+
+    for (int i = 0; i < n; i++)
+        if (search(take, TL, v[i]) == -1)
+        {
+            dfs_CN(v, n, E, v[i], take, TL);
+            c++;
+        }
+
+    return c;
+}
+
+/* Dijkstra */
+void dijkstraAll(string v[], int n, int E[][size], string sc)
+{
+    int cost[size], visit[size] = {0}, parent[size];
+
+    for (int i = 0; i < n; i++)
+    {
+        cost[i] = INF;
+        parent[i] = -1;
+    }
+
+    int s = search(v, n, sc);
+    if (s == -1)
+    {
+        cout << "\nStart vertex not found.\n";
+        return;
+    }
+
+    cost[s] = 0;
+
+    for (int k = 0; k < n; k++)
+    {
+        int curr = -1;
+
+        for (int i = 0; i < n; i++)
+            if (!visit[i] && (curr == -1 || cost[i] < cost[curr]))
+                curr = i;
+
+        if (curr == -1) break;
+
+        visit[curr] = 1;
+
+        for (int i = 0; i < n; i++)
+            if (E[curr][i] != 0 && cost[curr] + E[curr][i] < cost[i])
+            {
+                cost[i] = cost[curr] + E[curr][i];
+                parent[i] = curr;
+            }
+    }
+
+    cout << "\nDijkstra Result:\n";
+    for (int i = 0; i < n; i++)
+    {
+        cout << "Cost from " << sc << " to " << v[i] << " = ";
+
+        if (cost[i] == INF)
+            cout << "No path\n";
+        else
+            cout << cost[i] << endl;
+    }
+}
+
+/* DFS Forest */
+void DFS_Forest(int u, int n, int E[][size],
+                int visited[], int parent[],
+                string v[])
+{
+    visited[u] = 1;
+    cout << v[u] << " ";
+
+    for (int i = 0; i < n; i++)
+        if (E[u][i] == 1 && !visited[i])
+        {
+            parent[i] = u;
+            DFS_Forest(i, n, E, visited, parent, v);
+        }
+}
+
+int main()
+{
+    string v[size];
+    int E[size][size] = {0};
+    int n = 0;
+    int choice;
+    string s, d, name;
+
+    while (true)
+    {
+        cout << "\n========== GRAPH MENU ==========\n";
+        cout << "1. Add Vertex\n";
+        cout << "2. Add Edge\n";
+        cout << "3. Print Matrix\n";
+        cout << "4. DFS\n";
+        cout << "5. BFS\n";
+        cout << "6. Connected Components\n";
+        cout << "7. Dijkstra\n";
+        cout << "8. DFS Forest\n";
+        cout << "9. Exit\n";
+        cout << "Choose: ";
+        cin >> choice;
+
+        switch (choice)
+        {
+        case 1:
+            cout << "Enter vertex: ";
+            cin >> name;
+            addVertex(v, n, name, E);
+            break;
+
+        case 2:
+            cout << "Enter source and destination: ";
+            cin >> s >> d;
+            addEdge(v, n, E, s, d);
+            break;
+
+        case 3:
+            printMatrix(v, n, E);
+            break;
+
+        case 4:
+            cout << "Start DFS: ";
+            cin >> s;
+            DFS(v, n, E, s);
+            break;
+
+        case 5:
+            cout << "Start BFS: ";
+            cin >> s;
+            BFS(v, n, E, s);
+            break;
+
+        case 6:
+            cout << "\nConnected Components = "
+                 << CN_components(v, n, E) << endl;
+            break;
+
+        case 7:
+            cout << "Start Dijkstra: ";
+            cin >> s;
+            dijkstraAll(v, n, E, s);
+            break;
+
+        case 8:
+        {
+            int visited[size] = {0}, parent[size];
+            for (int i = 0; i < n; i++) parent[i] = -1;
+
+            int trees = 0;
+
+            for (int i = 0; i < n; i++)
+                if (!visited[i])
+                {
+                    trees++;
+                    cout << "\nTree " << trees << ": ";
+                    DFS_Forest(i, n, E, visited, parent, v);
+                }
+
+            cout << "\nTotal trees = " << trees << endl;
+            break;
+        }
+
+        case 9:
+            return 0;
+
+        default:
+            cout << "Invalid choice\n";
+        }
+    }
+}
