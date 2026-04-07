@@ -1,0 +1,183 @@
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+};
+
+Node* insert(Node* root, int val) {
+    if (root == NULL) {
+        Node* cn = new Node;
+        cn->left = NULL;
+        cn->right = NULL;
+        cn->data = val;
+        return cn;
+    }
+    else if (val <= root->data)
+        root->left = insert(root->left, val);
+    else
+        root->right = insert(root->right, val);
+    return root;
+}
+
+Node* findMin(Node* root) {
+    Node* i;
+    for (i = root; i != NULL && i->left != NULL; i = i->left);
+    return i;
+}
+
+Node* deleteNode(Node* root, int val) {
+    if (root == NULL)
+        return NULL;
+
+    if (val < root->data)
+        root->left = deleteNode(root->left, val);
+    else if (val > root->data)
+        root->right = deleteNode(root->right, val);
+    else {
+        if (root->left == NULL && root->right == NULL) {
+            delete root;
+            return NULL;
+        }
+        else if (root->left == NULL) {
+            Node* temp = root->right;
+            delete root;
+            return temp;
+        }
+        else if (root->right == NULL) {
+            Node* temp = root->left;
+            delete root;
+            return temp;
+        }
+        else {
+            Node* temp = findMin(root->right);
+            root->data = temp->data;
+            root->right = deleteNode(root->right, temp->data);
+        }
+    }
+    return root;
+}
+
+void inorder(Node* root) {
+    if (root != NULL) {
+        inorder(root->left);
+        cout << root->data << " ";
+        inorder(root->right);
+    }
+}
+
+Node* search(Node* root, int val) {
+    while (root != NULL && root->data != val) {
+        if (val < root->data)
+            root = root->left;
+        else
+            root = root->right;
+    }
+    return root;
+}
+
+int size(Node* root) {
+    if (root == NULL)
+        return 0;
+    else
+        return 1 + size(root->left) + size(root->right);
+}
+
+int maxDepth(Node* root) {
+    if (root == NULL)
+        return 0;
+    int ld = maxDepth(root->left);
+    int rd = maxDepth(root->right);
+    if (ld > rd)
+        return ld + 1;
+    else
+        return rd + 1;
+}
+
+
+void print(Node* r, int level, int L = 1) {
+    if (r == NULL) {
+        return;
+    }
+
+    if (L == level)
+        cout << r->data << " ";
+
+    if (r->left != NULL)
+        print(r->left, level, L + 1);
+    if (r->right != NULL)
+        print(r->right, level, L + 1);
+}
+
+int main() {
+    Node* root = NULL;
+    int choice, val, level;
+
+    while (true) {
+        cout << "\nMenu:\n";
+        cout << "1. Insert element\n";
+        cout << "2. Delete element\n";
+        cout << "3. Print elements (Inorder)\n";
+        cout << "4. Search element\n";
+        cout << "5. Tree size\n";
+        cout << "6. Max depth\n";
+        cout << "7. Print by level\n";
+        cout << "8. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+        case 1:
+            cout << "Enter value to insert: ";
+            cin >> val;
+            root = insert(root, val);
+            break;
+
+        case 2:
+            cout << "Enter value to delete: ";
+            cin >> val;
+            root = deleteNode(root, val);
+            break;
+
+        case 3:
+            cout << "Tree elements (Inorder): ";
+            inorder(root);
+            cout << endl;
+            break;
+
+        case 4:
+            cout << "Enter value to search: ";
+            cin >> val;
+            if (search(root, val) != NULL)
+                cout << "Element found.\n";
+            else
+                cout << "Element not found.\n";
+            break;
+
+        case 5:
+            cout << "Tree size: " << size(root) << endl;
+            break;
+
+        case 6:
+            cout << "Max depth: " << maxDepth(root) << endl;
+            break;
+
+        case 7:
+            cout << "Enter level to print: ";
+            cin >> level;
+            print(root, level);
+            cout << endl;
+            break;
+
+        case 8:
+            return 0;
+
+        default:
+            cout << "Invalid choice.\n";
+        }
+    }
+
+    return 0;
+}
